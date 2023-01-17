@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    // 目标代码: ts需要将代码编译成JS代码才可以进行执行 而这个目标代码就是最终被编译成的js代码
+    // 例如目标代码是es5 es6 等等 这里esnext是指es6 es7 es8等等 因为这里一般不需要做处理
+    // 因为我们创建项目时候 有选择babel来做代码转换 所以这个代码最终是会被babel做转换的
+    "target": "esnext",
+    // 模块化方案：目标代码需要使用的模块化方案 例如Esmodule CommonJs 而这个Esnext默认使用的其实就是Esmodule
+    "module": "esnext",
+    // 严格模式的检查：例如any 它是否被允许使用
+    "strict": true,
+    // 对jsx进行怎样的处理 例如要不要转换成h函数 或者是createElement函数 这里也一般不处理 因为babel最终会做处理
+    "jsx": "preserve",
+    // 按照node方式去解析模块
+    "moduleResolution": "node",
+    // 跳过对一些库的类型检测
+    "skipLibCheck": true,
+    // esmodule和commonjs能不能混合使用
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    // 要不要生成映射文件
+    "sourceMap": true,
+    // 文件路径解析时，基本的url
+    "baseUrl": ".",
+    "types": ["webpack-env"],
+    // 路径解析 类似于webpack的别名 alias
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    // 允许使用的一些类型
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+  },
+  // 当前的这个配置适用于那些文件
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  // 排除被引入的文件解析 比如说我们引入了axios 然后axios其实是一个第三方包 此时他其实也是会被解析的
+  // 现在排除掉 那么最终这个第三方包是不会被解析的
+  "exclude": ["node_modules"]
+}
