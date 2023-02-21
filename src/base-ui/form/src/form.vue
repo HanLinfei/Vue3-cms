@@ -13,6 +13,7 @@
               class="form-item"
               :style="itemStyle"
               size="large"
+              v-if="!item.isHidden"
             >
               <template
                 v-if="item.type === 'input' || item.type === 'password'"
@@ -20,13 +21,15 @@
                 <el-input
                   :placeholder="item.placeholder"
                   :show-password="item.type === 'password'"
-                  v-model="copyFormData[item.field]"
+                  :model-value="formData[item.field]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 ></el-input>
               </template>
               <template v-else-if="item.type === 'select'">
                 <el-select
                   :placeholder="item.placeholder"
-                  v-model="copyFormData[item.field]"
+                  :model-value="formData[item.field]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -38,10 +41,11 @@
               </template>
               <template v-else-if="item.type === 'datepicker'">
                 <el-date-picker
-                  v-model="copyFormData[item.field]"
+                  :model-value="formData[item.field]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                   type="daterange"
-                  start-placeholder="Start Date"
-                  end-placeholder="End Date"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
                 />
               </template>
             </el-form-item>
@@ -56,8 +60,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType, watch, defineEmits, reactive, ref } from "vue"
+import { defineProps, PropType, defineEmits } from "vue"
 import type { IFormItem } from "../index"
+
 const props = defineProps({
   formData: {
     type: Object,
@@ -85,36 +90,19 @@ const props = defineProps({
     })
   }
 })
-
-// 实现双向绑定
-
-// 不要违反单向数据流：子组件不要直接修改父组件：
-// 1. 浅拷贝一份 子组件内部绑定拷贝的这一份
-// 2. 子组件触发更改(拷贝的) 然后发送事件出去 修改父组件状态
-const copyFormData = reactive({ ...props.formData })
-// console.log(copyFormData === props.formData.value)
-// const copyFromData = computed(() => ({ ...props.formData }))
 const emit = defineEmits(["update:formData"])
 
-// 子组件出发更改 => 发送事件出去进行修改状态
-watch(
-  copyFormData,
-  (newValue) => {
-    console.log("监听到了copyFromData的改变", newValue)
-    emit("update:formData", newValue)
-  },
-  {
-    deep: true
-  }
-)
+const handleValueChange = (value: any, field: string) => {
+  emit("update:formData", { ...props.formData, [field]: value })
+}
 </script>
 
 <style scoped lang="less">
+.hlf-form {
+  padding: 0 10px 0 0;
+}
 .el-form {
   padding-top: 22px;
-  .el-form-item {
-    padding: 5px 10px;
-  }
 }
 .el-select {
   width: 100%;

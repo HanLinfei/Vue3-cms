@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/views/not-found/not-found.vue")
   }
 ]
-
+console.log("router执行了")
 const router = createRouter({
   routes: routes,
   history: createWebHashHistory()

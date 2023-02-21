@@ -31,15 +31,17 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
     // 和我们实现配好的路由进行一个映射 事先配好的路由已经映射了一个个组件了
     // 映射办法：将菜单中的路由和事先配好的路由进行比较 如果相等 那么就说明有该权限
     // 那么就做一个映射 并且将该路由添加到路由数组中
-    for (const menu of menus) {
-      if (menu.type === 2) {
-        const route = allRoutes.find((route) => route.path === menu.url)
-        if (route) routes.push(route)
-        if (!firstMenu) {
-          firstMenu = menu
+    if (menus.length) {
+      for (const menu of menus) {
+        if (menu.type === 2) {
+          const route = allRoutes.find((route) => route.path === menu.url)
+          if (route) routes.push(route)
+          if (!firstMenu) {
+            firstMenu = menu
+          }
+        } else {
+          _recurseGetRoute(menu.children)
         }
-      } else {
-        _recurseGetRoute(menu.children)
       }
     }
   }
@@ -77,6 +79,39 @@ export function pathMapToBreadcrumb(userMenus: any[], currentPath: string) {
       return menu
     }
   }
+}
+
+// 获取改登录角色的所有菜单权限
+export function mapMenusToPermissions(userMenus: any[]) {
+  const permission: string[] = []
+  const _recurseGetPermission = (menus: any[]) => {
+    for (const menu of menus) {
+      if (menu.type === 1 || menu.type === 2) {
+        _recurseGetPermission(menu.children ?? [])
+      } else if (menu.type === 3) {
+        permission.push(menu.permission)
+      }
+    }
+  }
+
+  _recurseGetPermission(userMenus)
+  return permission
+}
+
+// 传入菜单 映射叶子节点
+export function mapLeafNodeByMenus(userMenus: any[]) {
+  const leafMenu: number[] = []
+  function _recurseGetLeafMenuKey(userMenus: any[]) {
+    for (const menuItem of userMenus) {
+      if (menuItem.children) {
+        _recurseGetLeafMenuKey(menuItem.children)
+      } else {
+        leafMenu.push(menuItem.id)
+      }
+    }
+  }
+  _recurseGetLeafMenuKey(userMenus)
+  return leafMenu
 }
 
 export { firstMenu }

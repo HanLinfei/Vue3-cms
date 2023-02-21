@@ -53,8 +53,10 @@ const isKeepPassword = localCache.getCache("isKeepPassword")
   ? ref(true)
   : ref(false)
 /**
- * 先通过typeof拿到这个loginAccountVue组件的类型
- * 之后再通过InstanceType来拿到这个类型的实例
+ * 先通过typeof拿到这个loginAccountVue组件的类型 (是一个对象)
+ * 之后再通过InstanceType来拿到这个类型的实例 (这个对象由谁创建出来的？ 也就是这个组件构造函数
+ * 而这个InstanceType就可以拿到这个对象的构造函数类型)
+ *
  * 其实可以理解为 loginAccountVue 是一个构造函数 也就是一个类
  * 然后通过这个类可以创建很多组件实例
  */

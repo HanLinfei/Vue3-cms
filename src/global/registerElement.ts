@@ -31,7 +31,11 @@ import {
   ElDatePicker,
   ElTable,
   ElTableColumn,
-  ElPagination
+  ElPagination,
+  ElImage,
+  ElDialog,
+  ElTree,
+  ElCard
 } from "element-plus"
 import * as ElementPlusIconsVue from "@element-plus/icons-vue"
 
@@ -64,7 +68,11 @@ const components = [
   ElDatePicker,
   ElTable,
   ElTableColumn,
-  ElPagination
+  ElPagination,
+  ElImage,
+  ElDialog,
+  ElTree,
+  ElCard
 ]
 
 // 动态全局注册组件

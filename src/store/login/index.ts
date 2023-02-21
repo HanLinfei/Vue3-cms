@@ -1,6 +1,6 @@
 import { Module } from "vuex"
 import localCache from "@/utils/cache"
-import { mapMenusToRoutes } from "@/utils/map-menus"
+import { mapMenusToRoutes, mapMenusToPermissions } from "@/utils/map-menus"
 import router from "@/router"
 import type { ILoginState } from "./types"
 import type { IRootState } from "../types"
@@ -18,7 +18,8 @@ const loginModule: Module<ILoginState, IRootState> = {
     return {
       token: "",
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permissions: []
     }
   },
   // 修改state最好是通过mutations来修改 这是一个基本原则
@@ -37,11 +38,14 @@ const loginModule: Module<ILoginState, IRootState> = {
       routes.forEach((route) => {
         router.addRoute("main", route)
       })
+
+      // 获取角色的按钮权限
+      state.permissions = mapMenusToPermissions(userMenus)
     }
   },
   actions: {
     // 点击登录按钮之后
-    async accountLoginAction({ commit }, payload: IAccount) {
+    async accountLoginAction({ commit, dispatch }, payload: IAccount) {
       // 1.登录逻辑:请求token
       const loginResult = await accountLoginRequest(payload)
       if (!loginResult) {
@@ -52,6 +56,8 @@ const loginModule: Module<ILoginState, IRootState> = {
         })
         return false
       }
+      // 请求部门数据和角色数据
+      dispatch("getInitialDataAction", null, { root: true })
       const { id, token } = loginResult.data
       localCache.setCache("token", token)
       commit("changeToken", token)
@@ -72,7 +78,7 @@ const loginModule: Module<ILoginState, IRootState> = {
     },
 
     // 给vuex更新状态：因为当每次别人刷新页面之后 或者是没有经过登录来到页面 那么vuex里的数据实际上是没有的
-    loadLocalLogin({ commit }) {
+    loadLocalLogin({ commit, dispatch }) {
       const token = localCache.getCache("token")
       if (token) commit("changeToken", token)
 
@@ -81,6 +87,8 @@ const loginModule: Module<ILoginState, IRootState> = {
 
       const userMenus = localCache.getCache("userMenus")
       if (userMenus) commit("changeUserMenus", userMenus)
+
+      dispatch("getInitialDataAction", null, { root: true })
     }
   },
   getters: {}

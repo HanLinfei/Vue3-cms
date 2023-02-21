@@ -3,7 +3,9 @@
     <HlfForm v-bind="searchFormConfig" v-model:formData="formData">
       <template #footer>
         <div class="footer">
-          <el-button type="primary" :icon="Search">搜索</el-button>
+          <el-button type="primary" :icon="Search" @click="handleQueryClick"
+            >搜索</el-button
+          >
           <el-button type="danger" :icon="RefreshRight" @click="handlerReset">
             重置
           </el-button>
@@ -14,9 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from "vue"
+import { ref, defineProps, defineEmits, onMounted } from "vue"
 import HlfForm from "@/base-ui/form"
 import { Search, RefreshRight } from "@element-plus/icons-vue"
+
+const emit = defineEmits(["resetBtnClick", "queryBtnClick"])
 
 const props = defineProps({
   searchFormConfig: {
@@ -32,12 +36,29 @@ for (const item of props.searchFormConfig.formItems) {
 }
 // 表单状态
 const formData = ref(originFormDataField)
-// 重置按钮：清空表单状态
+
+// 第一种做法
+// // 重置按钮：清空表单状态
+// const handlerReset = () => {
+//   for (const key in originFormDataField) {
+//     formData.value[key] = ""
+//   }
+// }
+
+// 第二种做法
 const handlerReset = () => {
-  for (const key in originFormDataField) {
-    formData.value[key] = ""
-  }
+  formData.value = originFormDataField
+  emit("resetBtnClick")
 }
+
+// 用户点击搜索按钮
+const handleQueryClick = () => {
+  emit("queryBtnClick", formData.value)
+}
+
+onMounted(() => {
+  console.log("pageSearch挂载完毕")
+})
 </script>
 
 <style scoped lang="less">

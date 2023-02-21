@@ -5,6 +5,7 @@
       <p class="title" v-if="!isFlod">Vue3Admin</p>
     </div>
     <div class="menu">
+      <!-- collapse 外界传进来折叠的状态 -->
       <el-menu
         background-color="#2a598a"
         text-color="#fff"

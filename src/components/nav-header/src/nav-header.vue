@@ -54,6 +54,7 @@ import hlfBreadcrumb from "@/base-ui/breadcrumb"
 import { pathMapToBreadcrumb } from "@/utils/map-menus"
 import { useStore } from "@/store"
 import { useRouter, useRoute } from "vue-router"
+import localCatch from "@/utils/cache"
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
@@ -75,6 +76,7 @@ const breadcrumb = computed(() => {
 
 const exitLogin = () => {
   router.replace("/login")
+  localCatch.clearCache()
 }
 </script>
 

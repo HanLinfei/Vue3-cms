@@ -1,7 +1,7 @@
 // input的类型
 type IFormType = "input" | "password" | "select" | "datepicker"
 type ISelectOptions = {
-  value: string
+  value: number
   label: string
 }
 // 栅格系统的布局类型
@@ -20,6 +20,7 @@ export interface IFormItem {
   rules?: object[]
   placeholder?: string
   options?: ISelectOptions[]
+  isHidden?: boolean
 }
 // 表单的类型
 export interface IForm {
